@@ -4,3 +4,4 @@ Cache/
 *.jsonl
 *.csv
 *.log
+*old*
