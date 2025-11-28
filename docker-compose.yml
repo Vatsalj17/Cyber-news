@@ -24,9 +24,8 @@ services:
 
   # 3. Your Application (Pulls from Cloud)
   cyber-news:
-    # CHANGE THIS to your Docker Hub image
     image: vatsalj17/cyber-news:latest 
-    # (Or keep 'build: .' if you want them to build strictly locally)
+    # build: .
     
     container_name: cyber_news_dashboard
     depends_on:
