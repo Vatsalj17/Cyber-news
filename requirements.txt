@@ -1,0 +1,14 @@
+requests
+beautifulsoup4
+playwright
+pathway
+sentence-transformers
+textual
+ollama
+lxml
+pdf2image
+unstructured
+pathway[xpack-llm-docs]
+
+flask
+flask_cors

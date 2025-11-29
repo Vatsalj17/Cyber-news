@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KERNEL PANIC DASHBOARD</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: #0d1117;
+            color: #c9d1d9;
+            margin: 0;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+        .container {
+            display: flex;
+            width: 100%;
+        }
+        .sidebar {
+            width: 30%;
+            border-right: 1px solid #30363d;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            background-color: #161b22;
+        }
+        .main-content {
+            width: 70%;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+        #chat-history {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 20px;
+        }
+        #input-area {
+            padding: 20px;
+            border-top: 1px solid #30363d;
+        }
+        #chat-input {
+            width: 100%;
+            padding: 10px;
+            background-color: #0d1117;
+            border: 1px solid #30363d;
+            color: #c9d1d9;
+            border-radius: 6px;
+        }
+        #alerts-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        #alerts-table th, #alerts-table td {
+            padding: 8px 12px;
+            text-align: left;
+        }
+        .message { margin-bottom: 20px; }
+        .sender { font-weight: bold; margin-bottom: 5px; color: #8b949e; }
+        .user .sender { color: #58a6ff; }
+        .oracle .sender { color: #238636; }
+        .system .sender { color: #e3b341; }
+        h2 { text-align: center; color: #8b949e;}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <h2>🚨 THREAT MONITOR</h2>
+            <table id="alerts-table">
+                <thead>
+                    <tr>
+                        <th>THREAT</th>
+                        <th>COUNT</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+        <div class="main-content">
+            <div id="chat-history">
+                 <div class="message system">
+                    <div class="sender">SYSTEM</div>
+                    <div class="text">**UPLINK ESTABLISHED.**</div>
+                </div>
+            </div>
+            <div id="input-area">
+                <form id="chat-form">
+                    <input type="text" id="chat-input" placeholder="COMMAND >> (e.g. 'new linux heap exploits')" autocomplete="off">
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/4.0.2/marked.min.js"></script>
+    <script>
+        const chatHistory = document.getElementById('chat-history');
+        const chatForm = document.getElementById('chat-form');
+        const chatInput = document.getElementById('chat-input');
+        const alertsTableBody = document.querySelector('#alerts-table tbody');
+
+        function addMessage(sender, text, role) {
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add('message', role);
+            
+            const senderDiv = document.createElement('div');
+            senderDiv.classList.add('sender');
+            senderDiv.innerText = sender;
+
+            const textDiv = document.createElement('div');
+            textDiv.classList.add('text');
+            textDiv.innerHTML = marked.parse(text); // Use marked.js to parse markdown
+            
+            messageDiv.appendChild(senderDiv);
+            messageDiv.appendChild(textDiv);
+            chatHistory.appendChild(messageDiv);
+            chatHistory.scrollTop = chatHistory.scrollHeight;
+        }
+
+        async function fetchAlerts() {
+            try {
+                const response = await fetch('/alerts');
+                const alerts = await response.json();
+                
+                alertsTableBody.innerHTML = ''; // Clear table
+                
+                if (alerts.length === 0) {
+                     alertsTableBody.innerHTML = '<tr><td>Scanning...</td><td>0</td></tr>';
+                } else {
+                    alerts.forEach(alert => {
+                        const row = document.createElement('tr');
+                        let wordCell = document.createElement('td');
+                        let countCell = document.createElement('td');
+                        
+                        let wordStyle = '';
+                        if (alert.count > 100) {
+                            wordStyle = 'color: #f85149; font-weight: bold;';
+                        } else if (alert.count > 20) {
+                            wordStyle = 'color: #e3b341;';
+                        }
+                        
+                        wordCell.innerHTML = `<span style="${wordStyle}">${alert.word.toUpperCase()}</span>`;
+                        countCell.innerText = alert.count;
+                        
+                        row.appendChild(wordCell);
+                        row.appendChild(countCell);
+                        alertsTableBody.appendChild(row);
+                    });
+                }
+            } catch (error) {
+                console.error('Error fetching alerts:', error);
+                alertsTableBody.innerHTML = '<tr><td colspan="2" style="color:red;">Error loading alerts.</td></tr>';
+            }
+        }
+
+        chatForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const query = chatInput.value.trim();
+            if (!query) return;
+
+            addMessage('You', query, 'user');
+            chatInput.value = '';
+            addMessage('ORACLE', '⚡ Analyzing neural stream...', 'oracle');
+
+            try {
+                const response = await fetch('/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ query: query })
+                });
+
+                const data = await response.json();
+                
+                // Remove the "Analyzing" message
+                chatHistory.removeChild(chatHistory.lastChild); 
+                
+                addMessage('ORACLE', data.response, 'oracle');
+
+            } catch (error) {
+                console.error('Error in chat:', error);
+                chatHistory.lastChild.innerHTML = '<div class="sender">ORACLE</div><div class="text" style="color:red;">**ERROR:** Could not get response.</div>';
+            }
+        });
+
+        // Initial fetch and periodic refresh
+        fetchAlerts();
+        setInterval(fetchAlerts, 2000);
+    </script>
+</body>
+</html>

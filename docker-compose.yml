@@ -1,0 +1,43 @@
+services:
+  # 1. The AI Engine
+  ollama:
+    image: ollama/ollama:latest
+    container_name: cyber_news_ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+
+  # 2. The Initializer (Downloads model automatically)
+  ollama-init:
+    image: curlimages/curl
+    container_name: cyber_news_model_puller
+    depends_on:
+      - ollama
+    entrypoint: >
+      /bin/sh -c "
+      echo 'Waiting for Ollama...';
+      while ! curl -s http://ollama:11434/api/tags > /dev/null; do sleep 2; done;
+      echo 'Pulling phi3...';
+      curl -X POST http://ollama:11434/api/pull -d '{\"name\": \"phi3\"}';
+      "
+
+  # 3. Your Application (Pulls from Cloud)
+  cyber-news:
+    image: harshraj112/cyber_news:latest
+    container_name: cyber_news_dashboard
+    depends_on:
+      - ollama
+      - ollama-init
+    ports:
+      - "9000:9000" # RAG Port
+      - "5001:5001" # Web UI Port
+    stdin_open: true 
+    tty: true        
+    environment:
+      - TERM=xterm-256color
+      - OLLAMA_HOST=http://ollama:11434
+      - RAG_ENDPOINT=http://cyber-news:9000/v1/retrieve
+
+volumes:
+  ollama_data:
