@@ -39,6 +39,7 @@ lxml
 pdf2image
 unstructured
 pathway[xpack-llm-docs]
+flask
 EOF
 fi
 

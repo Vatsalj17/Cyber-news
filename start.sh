@@ -7,17 +7,17 @@ echo "--- Starting Cyber-News Platform ---"
 
 # 1. Start the Producer (Data Scraper)
 echo "[LAUNCH] Starting Producer..."
-python3 producer.py &
+python3 -u ./producer.py >producer.log 2>&1 &
 sleep 2
 
 # 2. Start the Pathway Pipeline (RAG Server)
 echo "[LAUNCH] Starting Pathway Pipeline & RAG Server..."
-python3 pipeline.py &
+python3 -u ./pipeline.py >pipeline.log 2>&1 &
 sleep 5 # Give it a moment to initialize
 
 # 3. Start the Web Dashboard (Flask App)
 echo "[LAUNCH] Starting Web Dashboard on port 5001..."
-python3 dashboard_web.py &
+python3 -u ./dashboard_web.py >dashboard_web.log 2>&1 &
 sleep 2
 
 # Announce completion
