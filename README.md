@@ -37,7 +37,7 @@ This setup uses Docker Compose to orchestrate all the necessary services, includ
     ```
     - This command will:
         - Pull the official `ollama` image.
-        - Pull the `imajaygiri/cyber-news:latest` application image from Docker Hub.
+        - Pull the `harshraj112/cyber-news:latest` application image from Docker Hub.
         - Run a helper container to download the `phi3` LLM model (this can take several minutes the first time).
         - Start all services and connect them on an internal Docker network.
 
