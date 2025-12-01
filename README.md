@@ -45,7 +45,7 @@ This method orchestrates the AI model (Ollama), the Data Pipeline, and the Dashb
 
 1.  **Clone the repository**:
     ```bash
-    git clone [https://github.com/vatsalj17/cyber-news.git](https://github.com/vatsalj17/cyber-news.git)
+    git clone https://github.com/vatsalj17/cyber-news.git
     cd cyber-news
     ```
 
