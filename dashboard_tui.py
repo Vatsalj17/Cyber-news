@@ -9,13 +9,10 @@ from textual.containers import VerticalScroll, Container, Horizontal
 from textual.widgets import Header, Footer, Input, Static, Markdown, DataTable
 from textual import work
 
-# --- CONFIGURATION ---
 RAG_ENDPOINT = os.getenv("RAG_ENDPOINT", "http://localhost:9000/v1/retrieve")
 OLLAMA_HOST = os.getenv("OLLAMA_HOST", "http://localhost:11434")
 LLM_MODEL = "phi3"
 ALERTS_PATH = "live_alerts.csv" 
-
-# --- WIDGETS ---
 
 class ChatMessage(Container):
     def __init__(self, text: str, sender: str, **kwargs):
@@ -167,8 +164,6 @@ class SecurityDashboard(App):
         if not files:
             return
 
-        # Use a Dictionary to aggregate duplicates
-        # Format: {"threat_name": total_count}
         threat_map = {}
 
         for file in files:
@@ -192,10 +187,8 @@ class SecurityDashboard(App):
             except Exception:
                 pass
 
-        # Convert Dict back to List for sorting
         alerts = [(word, count) for word, count in threat_map.items()]
 
-        # Sort by Count DESC
         alerts.sort(key=lambda x: x[1], reverse=True)
         
         table.clear()

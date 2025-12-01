@@ -4,7 +4,6 @@ import csv
 import requests
 import datetime
 import ollama
-import sys
 
 # --- CONFIGURATION ---
 RAG_ENDPOINT = os.getenv("RAG_ENDPOINT", "http://localhost:9000/v1/retrieve")

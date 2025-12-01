@@ -7,51 +7,6 @@ import time
 import json
 from typing import List, Dict
 
-# import socket
-# class StreamSocket:
-#     """
-#     A low-level wrapper around a TCP socket to handle
-#     connection retries and data transmission.
-#     """
-#     def __init__(self, host: str = "127.0.0.1", port: int = 9999):
-#         self.host = host
-#         self.port = port
-#         self.sock = None
-#         self.connect()
-#
-#     def connect(self):
-#         """Attempts to connect to the Pathway listener with exponential backoff."""
-#         while True:
-#             try:
-#                 # AF_INET = IPv4, SOCK_STREAM = TCP
-#                 self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-#                 self.sock.connect((self.host, self.port))
-#                 print(f"[Socket] Connected to {self.host}:{self.port}")
-#                 return
-#             except ConnectionRefusedError:
-#                 print(f"[Socket] Connection failed. Retrying in 2s...")
-#                 time.sleep(2)
-#
-#     def send_entry(self, data: dict):
-#         """
-#         Serializes dict to JSON and sends it over the wire.
-#         Adds a newline delimiter because TCP is a stream, not packet-based.
-#         """
-#         if not self.sock:
-#             self.connect()
-#         
-#         assert self.sock is not None
-#         try:
-#             # json.dumps returns a string. encode() turns it into bytes (UTF-8).
-#             # We add \n so the receiver knows where one message ends.
-#             payload = (json.dumps(data) + "\n").encode('utf-8')
-#             self.sock.sendall(payload)
-#         except (BrokenPipeError, ConnectionResetError):
-#             print("[Socket] Broken pipe. Reconnecting...")
-#             self.connect()
-#             # Retry sending once after reconnect
-#             self.send_entry(data)
-
 class UniversalScraper:
     def __init__(self, url: str, js: bool = False, timeout: int = 15000) -> None:
         self.url = url

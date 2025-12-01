@@ -5,21 +5,21 @@ from scraper import UniversalScraper
 
 OUTPUT_FILE = "stream_buffer.jsonl"
 TARGET_URLS = [
-    "https://googleprojectzero.blogspot.com/",      # Deepest vulnerability research
-    "https://www.exploit-db.com/rss.xml",           # Raw exploits (RSS usually easier, but main site works)
-    "https://packetstormsecurity.com/",             # The old school archive
-    "https://lwn.net/Kernel/",                      # The Bible of Linux Kernel news
-    "https://kernelnewbies.org/LinuxChanges",       # Changelogs for new kernels
-    "https://grsecurity.net/blog",                  # Hardened Linux security
-    "https://www.openwall.com/lists/oss-security/", # Where 0-days are often disclosed first
-    "https://research.checkpoint.com/",             # Deep malware analysis
-    "https://vx-underground.org/",                  # Malware source code & papers
-    "https://hex-rays.com/blog/",                   # IDA Pro devs blog
-    "https://news.ycombinator.com",                 # Still useful for breaking tech discussion
-    "https://www.reddit.com/r/netsec/",             # High signal security news
-    "https://www.reddit.com/r/kernel/",             # Kernel specific discussion
-    "https://github.com/trending/c?since=daily",    # What C projects are hot?
-    "https://github.com/trending/rust?since=daily"  # What Rust projects are hot?
+    "https://googleprojectzero.blogspot.com/",
+    "https://www.exploit-db.com/rss.xml",
+    "https://packetstormsecurity.com/",
+    "https://lwn.net/Kernel/",
+    "https://kernelnewbies.org/LinuxChanges",
+    "https://grsecurity.net/blog",
+    "https://www.openwall.com/lists/oss-security/",
+    "https://research.checkpoint.com/",
+    "https://vx-underground.org/",
+    "https://hex-rays.com/blog/",
+    "https://news.ycombinator.com",
+    "https://www.reddit.com/r/netsec/",
+    "https://www.reddit.com/r/kernel/",
+    "https://github.com/trending/c?since=daily",
+    "https://github.com/trending/rust?since=daily"
 ]
 
 def run_producer():

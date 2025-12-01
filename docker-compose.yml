@@ -24,7 +24,7 @@ services:
 
   # 3. Your Application (Pulls from Cloud)
   cyber-news:
-    image: harshraj112/cyber_news:latest
+    image: vatsalj17/cyber-news:latest
     container_name: cyber_news_dashboard
     depends_on:
       - ollama
