@@ -1,6 +1,4 @@
-# Real-Time Cyber Intelligence Platform
-
-> **Status:** Active | **Architecture:** x86_64 (Linux) | **Engine:** Pathway + Ollama
+# ☢️ Real-Time Cyber Intelligence Platform
 
 **Cyber News** is a next-generation security intelligence aggregator that bridges the gap between raw data streams and Generative AI. Unlike traditional static dashboards, this platform utilizes a **streaming data pipeline** to ingest, process, and vectorize cybersecurity news, CVEs, and exploit feeds in real-time.
 
@@ -62,59 +60,74 @@ This method orchestrates the AI model (Ollama), the Data Pipeline, and the Dashb
 
 ---
 
-### Method 2: Dockerfile Build
-*Best for: Users who want to build the image manually or debug the container internals.*
+### Method 2: Single Docker Container
+*Best for: Users who want to run the specific application container without Compose.*
 
-1.  **Build the Image**:
+**1. Get the Image**
+You can either pull the pre-built image from Docker Hub (faster) or build it from source.
+
+* **Option A: Pull from Docker Hub**
     ```bash
-    docker build -t cyber-news:latest .
+    docker pull vatsalj17/cyber-news:latest
     ```
 
-2.  **Run the Container**:
-    Since the app needs to talk to a local Ollama instance or manage its own networking, the easiest way on Linux is to use the host network driver:
-    
+* **Option B: Build from Source**
     ```bash
-    docker run --network host -it cyber-news:latest
+    docker build -t vatsalj17/cyber-news:latest .
     ```
 
----
+**2. Run the Container**
+Since the app needs to talk to a local Ollama instance or manage its own networking, the easiest way on Linux is to use the host network driver:
+
+```bash
+docker run --network host -it vatsalj17/cyber-news:latest
+````
+
+-----
 
 ### Method 3: Automated Setup Script
+
 *Best for: Linux users running natively who want the environment set up for them.*
 
 We have provided a robust bash script that handles Python virtual environments, dependencies, and model fetching.
 
 1.  **Run the Setup Script**:
+
     ```bash
     ./setup.sh
     ```
+
     *This script will:*
-    * Create a hidden `.venv` (Virtual Environment).
-    * Install all Python dependencies.
-    * Install Playwright browsers (for scraping dynamic JS sites).
-    * Check for `ollama` and pull the `phi3` model.
+
+      * Create a hidden `.venv` (Virtual Environment).
+      * Install all Python dependencies.
+      * Install Playwright browsers (for scraping dynamic JS sites).
+      * Check for `ollama` and pull the `phi3` model.
 
 2.  **Start the Platform**:
+
     ```bash
     ./start.sh
     ```
 
----
+-----
 
 ### Method 4: Manual "Hacker" Setup
+
 *Best for: Enthusiasts who want to understand every moving part.*
 
 If you prefer full control over the installation, follow these steps:
 
 **1. System Dependencies**
 Ensure you have the necessary system libraries for document processing:
+
 ```bash
 # Arch Linux
 sudo pacman -S python-pip tesseract poppler
 
 # Ubuntu/Debian
 sudo apt-get install python3-pip tesseract-ocr poppler-utils
-````
+```
 
 **2. Python Environment**
 Create and activate a virtual environment to keep your system clean:
