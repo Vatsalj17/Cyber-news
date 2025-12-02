@@ -17,7 +17,7 @@ class UniversalScraper:
         self.result = {
             "url": url,
             "timestamp": time.time(),
-            "source_type": "web_scrape" # Tagging the data for the RAG engine
+            "source_type": "web_scrape"
         }
 
     def fetch_html(self) -> None:
@@ -97,7 +97,6 @@ class UniversalScraper:
         
         title_tag = self.soup.title
         self.result["meta"] = meta_data
-        # Ensure title is a flat string for Pathway schema simplicity
         self.result["page_title"] = str(title_tag.string) if title_tag and title_tag.string else ""
 
     def scrape(self) -> dict:
@@ -111,7 +110,6 @@ class UniversalScraper:
         return self.result
 
     def save_to_stream(self, filename: str = "stream_data.jsonl"):
-        """Appends the result to a JSONL file to simulate a stream."""
         with open(filename, "a", encoding="utf-8") as f:
             json.dump(self.result, f)
             f.write("\n")

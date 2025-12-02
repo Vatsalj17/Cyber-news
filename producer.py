@@ -29,10 +29,9 @@ def run_producer():
         url = random.choice(TARGET_URLS)
         try:
             print(f"[Producer] Scraping {url}...")
-            scraper = UniversalScraper(url, js=False) # Keep it fast
+            scraper = UniversalScraper(url, js=False)
             data = scraper.scrape()
             
-            # Atomic Append to file (simulates a stream)
             with open(OUTPUT_FILE, "a") as f:
                 json.dump(data, f)
                 f.write("\n")

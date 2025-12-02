@@ -9,6 +9,5 @@ lxml
 pdf2image
 unstructured
 pathway[xpack-llm-docs]
-
 flask
 flask_cors

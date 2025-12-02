@@ -2,9 +2,7 @@ import pathway as pw
 from pathway.xpacks.llm.vector_store import VectorStoreServer
 from pathway.xpacks.llm.embedders import SentenceTransformerEmbedder
 
-# --------------------------------------------------------------------------
-# SCHEMA
-# --------------------------------------------------------------------------
+# Schema
 class SecurityFeedSchema(pw.Schema):
     url: str
     full_text: str
@@ -12,9 +10,7 @@ class SecurityFeedSchema(pw.Schema):
     timestamp: float
     source_type: str
 
-# --------------------------------------------------------------------------
-# HELPER FUNCTIONS
-# --------------------------------------------------------------------------
+# Helper functions
 def split_text(text: str) -> list[str]:
     return text.split()
 
@@ -32,20 +28,20 @@ def pack_metadata(url: str, title: str, ts: float) -> dict:
     return {"url": url, "title": title, "timestamp": ts}
 
 def run_pipeline():
-    # 1. INGESTION
+    # 1. Ingestion
     t = pw.io.jsonlines.read(
         "stream_buffer.jsonl",
         schema=SecurityFeedSchema,
         mode="streaming"
     )
 
-    # 2. TOKENIZATION
+    # 2. Tokenization
     words_table = t.select(
         word_list=pw.apply(split_text, t.full_text),
         timestamp=t.timestamp
     )
 
-    # 3. FLATTENING
+    # 3. Flattening
     flattened = words_table.flatten(words_table.word_list)
     
     words = flattened.select(
@@ -53,20 +49,18 @@ def run_pipeline():
         timestamp=flattened.timestamp
     )
 
-    # 4. FILTERING
+    # 4. Filtering
     filtered_words = words.filter(
         pw.apply(is_security_keyword, words.word)
     )
 
-    # 5. BUCKETING
+    # 5. Bucketing
     words_with_bucket = filtered_words.select(
         word=filtered_words.word,
         bucket=pw.cast(int, filtered_words.timestamp // 60)
     )
 
-    # 6. AGGREGATION (FIXED)
-    # Replaced 'first' with 'max'. Since we group by these columns, 
-    # the value is constant, so max() simply returns the value.
+    # 6. Aggregation (fixed)
     stats = words_with_bucket.groupby(
         words_with_bucket.word, 
         words_with_bucket.bucket
@@ -76,10 +70,9 @@ def run_pipeline():
         count=pw.reducers.count()
     )
 
-    # 7. OUTPUT ANALYTICS
+    # 7. Output analytics
     raw_alerts = stats.filter(stats.count > 0)
 
-    # Explicit column selection for CSV
     formatted_alerts = raw_alerts.select(
         word=raw_alerts.word,
         count=raw_alerts.count,
@@ -88,13 +81,13 @@ def run_pipeline():
 
     pw.io.csv.write(formatted_alerts, "live_alerts.csv")
 
-    # 8. RAG ENGINE PREPARATION
+    # 8. Rag engine preparation
     rag_table = t.select(
         data=t.full_text,
         _metadata=pw.apply(pack_metadata, t.url, t.page_title, t.timestamp)
     )
 
-    # 9. START RAG SERVER
+    # 9. Start rag server
     vector_server = VectorStoreServer(
         rag_table, 
         embedder=SentenceTransformerEmbedder(model="all-MiniLM-L6-v2"),

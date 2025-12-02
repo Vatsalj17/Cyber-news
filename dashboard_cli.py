@@ -5,13 +5,11 @@ import requests
 import datetime
 import ollama
 
-# --- CONFIGURATION ---
 RAG_ENDPOINT = os.getenv("RAG_ENDPOINT", "http://localhost:9000/v1/retrieve")
 OLLAMA_HOST = os.getenv("OLLAMA_HOST", "http://localhost:11434")
 LLM_MODEL = "phi3"
 ALERTS_PATH = "live_alerts.csv"
 
-# --- MINIMAL UTILS ---
 class Colors:
     HEADER = '\033[95m'
     BLUE = '\033[94m'
@@ -71,10 +69,8 @@ def get_alerts():
     print("")
 
 def run_query(query):
-    """Handles RAG retrieval and LLM generation."""
     log("... Analyzing ...", Colors.BLUE)
     
-    # 1. RAG Retrieval
     context = "NO SIGNAL"
     sources = []
     
@@ -97,7 +93,6 @@ def run_query(query):
     except Exception as e:
         log(f"Warning: RAG Retrieval failed ({str(e)})", Colors.RED)
 
-    # 2. LLM Inference
     try:
         client = ollama.Client(host=OLLAMA_HOST)
         sys_msg = "You are a security analyst. Use REPORTS to answer. Be brief. Plain text only."
@@ -123,7 +118,6 @@ def run_query(query):
     except Exception as e:
         log(f"Error: LLM Generation failed ({str(e)})", Colors.RED)
 
-# --- MAIN LOOP ---
 def main():
     print(f"{Colors.BOLD}Security CLI v1.0{Colors.END} | Type {Colors.BOLD}/help{Colors.END} for commands")
     

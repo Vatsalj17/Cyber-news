@@ -58,21 +58,7 @@ echo -e "${BLUE}[LAUNCH] Starting Pathway Pipeline & RAG Server...${NC}"
 python3 -u ./pipeline.py > "$LOG_DIR/pipeline.log" 2>&1 &
 wait_for_service 9000 "RAG API"
 
-echo -e "${BLUE}[LAUNCH] Starting Web Dashboard...${NC}"
-python3 -u ./dashboard_web.py > "$LOG_DIR/dashboard_web.log" 2>&1 &
-wait_for_service 5001 "Web UI"
-
-echo ""
-echo "------------------------------------------"
-echo -e "✅ ${GREEN}All services are online.${NC}"
-echo "------------------------------------------"
-echo -e "🖥️  Web UI:  ${BLUE}http://localhost:5001${NC}"
-echo -e "🤖 RAG API: ${BLUE}http://localhost:9000${NC}"
-echo "------------------------------------------"
-echo ""
-echo -e "🚀 Launching Interactive CLI..."
-echo ""
-
-python3 dashboard_cli.py
+echo -e "${BLUE}[LAUNCH] Starting Tui Dashboard...${NC}"
+python3 -u ./dashboard_tui.py
 
 echo -e "\n${BLUE}--- Cyber-News Platform Shutting Down ---${NC}"

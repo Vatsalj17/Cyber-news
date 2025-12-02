@@ -4,10 +4,8 @@ import os
 import glob
 import csv
 import requests
-import datetime
 import ollama
 
-# --- CONFIGURATION ---
 RAG_ENDPOINT = os.getenv("RAG_ENDPOINT", "http://localhost:9000/v1/retrieve")
 OLLAMA_HOST = os.getenv("OLLAMA_HOST", "http://localhost:11434")
 LLM_MODEL = "phi3"
@@ -17,7 +15,6 @@ app = Flask(__name__, template_folder='.')
 CORS(app)
 
 def get_alerts():
-    """Reads CSV and returns a list of dictionaries."""
     files = []
     if os.path.isdir(ALERTS_PATH):
         files = glob.glob(os.path.join(ALERTS_PATH, "*.csv"))
@@ -43,12 +40,9 @@ def get_alerts():
             pass
 
     alerts = sorted(threat_map.items(), key=lambda x: x[1], reverse=True)
-    
-    # Convert to list of dicts for JSON serialization
     return [{"word": word, "count": count} for word, count in alerts[:20]]
 
 def process_query(query: str) -> str:
-    """Processes a user query against RAG and LLM."""
     try:
         payload = {"query": query, "k": 3}
         try:
